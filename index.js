@@ -14,7 +14,7 @@
 //              `----' `----'`-' `-' `---' `----'`-' `-'
 
 
-
+    //////////////////////////////////////////////////////////////////////////////////////////
    //////////////////////////////////////////////////////////////////////////////////////////
   //////////////////////////////Setting up Express Server App///////////////////////////////
  //////////////////////////////////////////////////////////////////////////////////////////
@@ -22,6 +22,12 @@
 
 var express = require('express');
 var app = express(); 
+var bodyParser = require('body-parser');
+//put at top so it can be passed down
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
+app.use(bodyParser.json());
 
     //////////////////////////////////////////////////////////////////////////////////////////
    //////////////////////////////////////////////////////////////////////////////////////////
@@ -42,6 +48,24 @@ app.use(function(req, res, next){
 //////////////////////////
 app.get('/api/rand', function(req, res){
     res.send(Math.random().toString());
+});
+
+app.get('/api/rand/:min/:max', function(req,res){
+    //gives server dynamic information
+    //calls over URL - HTTP
+    var max = parseInt(req.params.max); 
+    var min = parseInt(req.params.min)
+    //contains key value pairs from URL
+    res.send((Math.random() * (max-min)) + min).toString();
+});
+
+app.post('/api/name', function(req, res){
+    fs.appendFile('names.txt', req.body.name + '\n', function(err){
+        if(err){
+            console.log(err);
+        }
+    });
+    res.send('Hello ' + req.body.name)
 });
 
   //////////////////////////
